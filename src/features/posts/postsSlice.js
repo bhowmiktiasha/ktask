@@ -8,9 +8,12 @@ const initialState = [
     ava: "T",
     content: "Hello! How are you guys doing ?",
     user: "0",
+    comments: {
+      com: 3
+    },
     date: sub(new Date(), { minutes: 10 }).toISOString(),
     reactions: {
-      thumbsUp: 4,
+      thumbsUp: 2,
     },
   },
   {
@@ -19,9 +22,12 @@ const initialState = [
     ava: "P",
     content: "I am back guys , how are you guys doing? I was not well .",
     user: "2",
+    comments: {
+      com: 3
+    },
     date: sub(new Date(), { minutes: 5 }).toISOString(),
     reactions: {
-      thumbsUp: 2,
+      thumbsUp: 4,
     },
   },
 ];
@@ -40,8 +46,11 @@ const postsSlice = createSlice({
             id: nanoid(),
             date: new Date().toISOString(),
             title,
-            content,
+            content,         
             user: userId,
+            comments: {
+              com: 0
+            },
             reactions: {
               thumbsUp: 0,
             },
@@ -56,6 +65,15 @@ const postsSlice = createSlice({
         existingPost.reactions[reaction]++;
       }
     },
+
+    commentAdded(state, action) {
+      const { postId, comm } = action.payload;
+      const existingPost = state.find((post) => post.id === postId);
+      if (existingPost) {
+        existingPost.comments[comm]++;
+      }
+    },
+
     postUpdated(state, action) {
       const { id, title, content } = action.payload;
       const existingPost = state.find((post) => post.id === id);
@@ -67,6 +85,6 @@ const postsSlice = createSlice({
   },
 });
 
-export const { postAdded, postUpdated, reactionAdded } = postsSlice.actions;
+export const { postAdded, postUpdated, reactionAdded, commentAdded } = postsSlice.actions;
 
 export default postsSlice.reducer;
